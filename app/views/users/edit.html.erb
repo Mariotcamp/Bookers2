@@ -1,0 +1,13 @@
+<div class="container">
+  <h1>User info</h1>
+  <%= form_with model: @user, local:true do |f| %>
+  <%= render partial: 'layouts/error_messages', locals:{ book: @user } %>
+    <span>name</span>
+    <%= f.text_field :name %><br><br>
+    <span>image</span>
+    <%= f.attachment_field :profile_image %>
+    <span>introduction</span>
+    <%= f.text_area :introduction %><br><br>
+    <%= f.submit 'Update User' %>
+  <% end %>
+</div>

@@ -1,0 +1,33 @@
+<div class="container">
+  <p class="green"><%= flash[:notice] %></p> <!--deviseには最初からflash入ってるからこれだけでおーけ -->
+  <p class="green"><%= flash[:success] %></p>
+  <div class="row">
+    <%= render 'books/left' %>
+    <div class="col-xs-9 right-content">
+
+      <table>
+        <h1>Books</h1>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Body</th>
+          </tr>
+        </thead>
+        <tbody>
+           <% @books.each do |book| %>
+             <tr>
+               <td><%= attachment_image_tag @user, :profile_image, :fill, 30, 30, fallback: "noimage.jpg" %></td>
+               <td><%= link_to "/books/#{book.id}" do %>
+                     <%= book.title %>
+                   <% end %>
+               </td>
+               <td><%= book.body %></td>
+             </tr>
+           <% end %>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>

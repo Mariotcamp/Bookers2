@@ -1,0 +1,18 @@
+<div class="container">
+  <% flash.each do |key, value| %>
+    <%= content_tag(:div, value, class: "#{key}" ) %> <!--deviseには最初からflash入ってるからこれだけでおーけ -->
+  <% end %>
+  <div class="row">
+    <div class="col-sm-offset-2 col-sm-8">
+      <div class="tops-content">
+        <h1>Welcome to <i class="fas fa-book"></i>Bookers !!</h1>
+        <p>In <i class="fas fa-book"></i>Bookers,<br><br>you can share and exchange your opinions, impressions, and emotions<br><br>about various books!</p>
+        <ul class="tops-ul">
+          <li class="tops-li"><%= link_to 'Log in', new_user_session_path, class:  "btn btn-info" %></li>
+          <li class="tops-li"><%= link_to 'Sign Up', new_user_registration_path, class:  "btn btn-success" %></li>
+        </ul>
+      </div>
+      <p class="space">CopyRight Infratop.inc</p>
+    </div>
+  </div>
+</div>

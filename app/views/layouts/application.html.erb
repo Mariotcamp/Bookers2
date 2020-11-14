@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bookers2</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <header>
+      <div class="header-content container">
+        <div class="row">
+          <p class="white medium title col-xs-2 col-md-offset-1">Bookers</p>
+          <ol class="list col-xs-5 col-sm-offset-2 col-md-offset-3 col-lg-offset-4">
+            <% if user_signed_in? %>
+              <li class="white list-content"><i class="fas fa-home"></i><%= link_to 'Home' , user_path(current_user.id) , class:"link" %></li>
+              <li class="white list-content"><i class="fas fa-user"></i><%= link_to 'Users' , users_path , class:"link" %></li>
+              <li class="white list-content"><i class="fas fa-book"></i><%= link_to 'Books' , books_path , class:"link" %></li>
+              <li class="white list-content"><i class="fas fa-sign-out-alt"></i><%= link_to 'logout', destroy_user_session_path , method: :delete , class:"link" %></li>
+            <% else %>
+              <li class="white list-content"><i class="fas fa-home"></i><a href="/" class="link">Home</a></li>
+              <li class="white list-content"><i class="fas fa-paperclip"></i><a href="/home/about" class="link">About</a></li>
+              <li class="white list-content"><i class="fas fa-file-signature"></i><a href= "/users/sign_up" class="link">Sign up</a></li>
+              <li class="white list-content"><i class="fas fa-sign-in-alt"></i><a href= "/users/sign_in" class="link">login</a></li>
+            <% end %>
+          </ol>
+        </di>
+      </div>
+    </header>
+    <%= yield %>
+  </body>
+</html>
