@@ -26,6 +26,7 @@ class BooksController < ApplicationController
     @user = @createdbook.user#ここ定義の順番ミスるなよ→先にbookの情報を定義してからそれに紐付いたuserを取り出すわけじゃんか。
     #本を投稿する時投稿された本のuserって意味になるし、一覧からshowを押した時もその本のuserってことになるから都合が良き！
     #@users = User.find(params[:id])これやるとbookのidが入ってくる原因追求しろ
+    @book_comments = BookComment.new #大文字過去文字かの判断基準がわからん、モデルの命名基礎とかどうなってるっけ
   end
 
   def edit

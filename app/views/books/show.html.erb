@@ -6,20 +6,50 @@
 
       <table>
         <h2>Book detail</h2>
-
-
              <tr>
                <td><%= attachment_image_tag @user, :profile_image, :fill, 30, 30, fallback: "noimage.jpg" %><br><%= link_to user_path(@user) do %><%= @user.name %><% end %></td>
                <td><%= @createdbook.title %></td>
                <td><%= @createdbook.body %></td>
+
+               <% if @createdbook.favorited_by?(current_user) %>
+                 <td>
+                  <%= link_to book_favorites_path(@createdbook), method: :delete do %>
+                  <i class="far fa-heart" aria-hidden="true" style="color: red;"></i><br>
+                  <%= @createdbook.favorites.count %>いいね
+                  <% end %>
+                 </td>
+               <% else %>
+                 <td>
+                   <%= link_to book_favorites_path(@createdbook), method: :post do %>
+                   <i class="far fa-heart" aria-hidden="true" ></i><br>
+                   <%= @createdbook.favorites.count %>いいね
+                   <% end %>
+                 </td>
+               <% end %>
+
+               <td>コメント数:<%= @createdbook.book_comments.count %></td>
                <% if current_user.id == @createdbook.user_id %>
                  <td><%= link_to 'Edit', edit_book_path(@createdbook), class: "btn btn-success" %></td>
                  <td><%= link_to 'Destroy', book_path(@createdbook), method: :delete, class: "btn btn-danger", data: { confirm: '本当に消しますか？' } %></td>
                <% end %>
              </tr>
-
       </table>
-
+      <div class="comment">
+        <h3>コメント一覧</h3>
+        <% @createdbook.book_comments.each do |book_comments| %>
+        <ul style= "padding-left:15px;">
+          <li><%= book_comments.comment %>&nbsp;
+              <% if book_comments.user == current_user %>
+                <%= link_to '削除', book_book_comment_path(book_comments.book, book_comments), method: :delete %>
+              <% end %>
+          </li>
+        </ul>
+        <% end %>
+      </div>
+      <%= form_with(model: [@createdbook, @book_comments], local: true) do |f| %>
+        <%= f.text_area :comment , :size=>"100x6" , placeholder: "コメントはここに入力してください" %>
+        <%= f.submit 'Create Book comment' %>
+      <% end %>
     </div>
   </div>
 </div>

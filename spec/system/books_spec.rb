@@ -5,6 +5,7 @@ describe '投稿のテスト' do
   let!(:user2) { create(:user) }
   let!(:book) { create(:book, user: user) }
   let!(:book2) { create(:book, user: user2) }
+  let!(:book2_comment) { create(:book_comment, user: user2, book: book2) }
   before do
   	visit new_user_session_path
   	fill_in 'user[name]', with: user.name
@@ -109,7 +110,37 @@ describe '投稿のテスト' do
   			expect(page).to have_content book.body
   			expect(page).to have_content book2.body
   		end
+  		it 'いいねのハートが表示される' do
+  			expect(page).to have_link '', href: book_favorites_path(book)
+  			expect(page).to have_link '', href: book_favorites_path(book2)
+  		end
+  		it 'いいねのハートが表示される' do
+  			expect(page).to have_link '', href: book_favorites_path(book)
+  			expect(page).to have_link '', href: book_favorites_path(book2)
+  		end
+  		it 'コメント数が表示される' do
+  			expect(page).to have_content book.book_comments.count
+  			expect(page).to have_content book2.book_comments.count
+  		end
   	end
+  	context 'いいね機能のテスト' do
+			it 'いいね登録ができる' do
+				click_link '0', href: book_favorites_path(book)
+				expect(page).to have_link '1', href: book_favorites_path(book)
+				# いいね数が初期が0で、押すと1になることを利用したテスト（不安）
+				# , href: book_favorites_path(book)
+				# expect(current_path).to eq '/books/' + book.id.to_s
+				# expect(current_path).to eq('/books/' + book.id.to_s + '/edit')
+			end
+			it 'いいね解除ができる' do
+				click_link '0', href: book_favorites_path(book)
+				click_link '0', href: book_favorites_path(book2)
+				click_link '1', href: book_favorites_path(book)
+				click_link '1', href: book_favorites_path(book2)
+				expect(page).to have_link '0', href: book_favorites_path(book)
+				expect(page).to have_no_link '1', href: book_favorites_path(book)
+			end
+		end
   end
 
   describe '詳細画面のテスト' do
@@ -130,6 +161,49 @@ describe '投稿のテスト' do
   			visit book_path(book)
   			expect(page).to have_content book.body
   		end
+  		it 'いいね数が表示される' do
+  			visit book_path(book)
+  			expect(page).to have_content book.favorites.count
+  		end
+  		it 'コメント数が表示される' do
+  			visit book_path(book)
+  			expect(page).to have_content book.book_comments.count
+  		end
+  		it 'いいね登録ができる' do
+			visit book_path(book)
+			click_link '0', href: book_favorites_path(book)
+			expect(page).to have_link '1', href: book_favorites_path(book)
+		end
+		it 'いいね解除ができる' do
+			visit book_path(book)
+			click_link '0', href: book_favorites_path(book)
+			click_link '1', href: book_favorites_path(book)
+			expect(page).to have_link '0', href: book_favorites_path(book)
+			expect(page).to have_no_link '1', href: book_favorites_path(book)
+		end
+		it 'コメント投稿に成功する' do
+			visit book_path(book)
+		  	fill_in 'book_comment[comment]', with: Faker::Lorem.characters(number:30)
+		  	click_button 'Create Book comment'
+		  	expect(page).to have_content book.book_comments.find(2).comment
+		  	expect(page).to have_link 'Destroy', href: book_path(book)
+			expect(current_path).to eq '/books/' + book.id.to_s
+		end
+
+		it '他ユーザーのコメントは削除ボタンが表示されない' do
+			visit book_path(book2)
+		  	expect(page).to have_content book2.book_comments.find(1).comment
+		  	expect(page).to have_no_link 'Destroy', href: book_path(book2)
+			expect(current_path).to eq '/books/' + book2.id.to_s
+		end
+
+		it 'コメント投稿に失敗する' do
+
+			visit book_path(book)
+		  	click_button 'Create Book comment'
+		  	expect(page).to have_no_content book.book_comments.all
+		  	expect(current_path).to eq '/books/' + book.id.to_s
+		end
   	end
   	context '自分の投稿詳細画面の表示を確認' do
   		it '投稿の編集リンクが表示される' do
